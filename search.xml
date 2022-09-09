@@ -4,13 +4,27 @@
   
     
     <entry>
-      <title>Hello World</title>
-      <link href="/2022/08/14/hello-world/"/>
-      <url>/2022/08/14/hello-world/</url>
+      <title>多传感器融合定位课程笔记(第一章)</title>
+      <link href="/2022/09/09/20220909/"/>
+      <url>/2022/09/09/20220909/</url>
       
-        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+        <content type="html"><![CDATA[<h1 id="Chapter13D激光里程计"><a href="#Chapter13D激光里程计" class="headerlink" title="Chapter13D激光里程计"></a>Chapter13D激光里程计</h1><h2 id="激光雷达"><a href="#激光雷达" class="headerlink" title="激光雷达"></a>激光雷达</h2><ol><li><p><strong>原理</strong>：传感器向周围发射脉冲，接收反射，根据二者时间间隔计算距离</p></li><li><p><strong>分类</strong>：</p><p>​1) 机械旋转雷达：视角范围大(±180°)，多激光束同时发射，绕固定轴旋转</p><p>​2) 固态雷达：视角范围小(如Livox Mid-40，±30°左右)，非重复扫描，扫描方式为梅花瓣状</p></li></ol><h2 id="前端里程计方案"><a href="#前端里程计方案" class="headerlink" title="前端里程计方案"></a>前端里程计方案</h2><ul><li>基于直接匹配 ( ICP，NDT )</li><li>基于特征 ( LOAM系列 )</li><li>多传感器融合</li><li>……</li></ul><h2 id="基于直接匹配方式"><a href="#基于直接匹配方式" class="headerlink" title="基于直接匹配方式"></a>基于直接匹配方式</h2><h3 id="ICP-迭代最近点"><a href="#ICP-迭代最近点" class="headerlink" title="ICP(迭代最近点)"></a>ICP(迭代最近点)</h3><ol><li><p><strong>原理</strong>：距离最近的点作匹配，最小化误差函数，求解位姿变换关系，不断迭代找最优解</p></li><li><p><strong>过程</strong>：</p><p>​1) 找欧式距离最小的点进行匹配</p><p>​2) 利用两点云重心计算旋转矩阵 <strong>R</strong> 和平移向量 <strong>t</strong></p><p>​3) 不断迭代(<strong>P-Q</strong>，<strong>P’-Q</strong>，<strong>P’’-Q</strong>)，求解位姿变换关系</p><p>​4) 平均距离小于设定阈值或达到迭代次数，结束算法</p></li><li><p><strong>缺点</strong>：要求初始的位姿必须很好</p></li><li><p><strong>改进</strong>：</p><p>​1) PL-ICP：使用点到其最近两点连线的距离作误差</p><p>​2) NICP：误差项考虑欧氏距离和对应点法向量的角度差</p><p>​3) IMLS-ICP：局部曲面建模，误差取点到曲面的距离</p><p>​4) ……</p></li></ol><h3 id="NDT-正态分布变换"><a href="#NDT-正态分布变换" class="headerlink" title="NDT(正态分布变换)"></a>NDT(正态分布变换)</h3><ol><li><p><strong>原理</strong>：根据正态分布参数计算对应点落在对应网格中的概率之和，不断迭代使概率之和最大</p></li><li><p><strong>过程</strong>：</p><p>​1) 划分栅格</p><p>​2) 计算网格的概率分布模型</p><p>​3) 变换 <strong>Q</strong> 中的点云到 <strong>P</strong> 坐标系下</p><p>​4) 根据正态分布参数计算每个转换点落到对应栅格的概率</p><p>​5) 计算概率之和(NDT配准得分)</p><p>​6) 根据牛顿优化算法进行优化，求得概率最大时的参数</p><p>​7) 跳转到步骤 3) ，不断迭代(<strong>P-Q</strong>，<strong>P-Q</strong>‘，<strong>P-Q</strong>‘’)，直到算法收敛</p></li><li><p><strong>优点</strong>：相比 ICP，计算量小，鲁棒性高</p></li></ol><h2 id="基于特征方式-LOAM系列"><a href="#基于特征方式-LOAM系列" class="headerlink" title="基于特征方式(LOAM系列)"></a>基于特征方式(LOAM系列)</h2><ul><li><p>LOAM</p></li><li><p>A-LOAM</p></li><li><p>FLOAM</p></li><li><p>LEGO-LOAM</p></li></ul><p><strong>[ 注 ]</strong> 以上算法源码阅读与分析见”代码阅读”模块</p><h2 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h2><ol><li><p><strong>KITTI数据集</strong></p><p><img src="/2022/09/09/20220909/kitti%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86%E8%BD%A6.png" alt="KITTI数据采集车"></p><p>使用数据集里的 RawData 数据，它包含 RTK、IMU、激光雷达、摄像头等传感器的数据，且时间戳已对齐</p></li><li><p><strong>使用</strong></p><p>​kitti2bag 将数据转化为 bag 文件</p></li></ol><h2 id="里程计工程框架实现"><a href="#里程计工程框架实现" class="headerlink" title="里程计工程框架实现"></a>里程计工程框架实现</h2><p>参考知乎 “从零开始做自动驾驶定位三，四，五”</p><p><a href="https://zhuanlan.zhihu.com/p/113616755">从零开始做自动驾驶定位（文章汇总） - 知乎 (zhihu.com)</a></p><h2 id="里程计精度评价"><a href="#里程计精度评价" class="headerlink" title="里程计精度评价"></a>里程计精度评价</h2><p>使用 evo 工具计算绝对位姿误差与相对位姿误差，对算法精度进行评价</p><p>使用方法可参考”<a href="https://blog.csdn.net/qq_39779233/article/details/108299612">SLAM精度评定工具EVO使用方法详解_wongHome的博客-CSDN博客_evo slam</a>“</p>]]></content>
       
       
+      <categories>
+          
+          <category> SLAM </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 课程笔记 </tag>
+            
+            <tag> 《多传感器融合定位》 </tag>
+            
+        </tags>
       
     </entry>
     
