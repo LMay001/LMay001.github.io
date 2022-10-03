@@ -1,0 +1,280 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>A-LOAM问题解决 | LMay</title><meta name="keywords" content="SLAM,A-LOAM,算法分析"><meta name="author" content="LMay"><meta name="copyright" content="LMay"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="解决阅读A-LOAM算法过程中的问题以及一些总结">
+<meta property="og:type" content="article">
+<meta property="og:title" content="A-LOAM问题解决">
+<meta property="og:url" content="http://lmay001.github.io/2022/10/03/20221003/index.html">
+<meta property="og:site_name" content="LMay">
+<meta property="og:description" content="解决阅读A-LOAM算法过程中的问题以及一些总结">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://tucang.cc/api/image/show/6d9e16e56d2d620272da03e3bd7bf532">
+<meta property="article:published_time" content="2022-10-03T04:48:47.000Z">
+<meta property="article:modified_time" content="2022-10-03T08:43:14.081Z">
+<meta property="article:author" content="LMay">
+<meta property="article:tag" content="SLAM">
+<meta property="article:tag" content="A-LOAM">
+<meta property="article:tag" content="算法分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tucang.cc/api/image/show/6d9e16e56d2d620272da03e3bd7bf532"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://lmay001.github.io/2022/10/03/20221003/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'A-LOAM问题解决',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-10-03 16:43:14'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://tucang.cc/api/image/show/e7d7077461d1d59fa8f5859f9d60a15d" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-thin fa-address-card"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://tucang.cc/api/image/show/6d9e16e56d2d620272da03e3bd7bf532')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">LMay</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-thin fa-address-card"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">A-LOAM问题解决</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-10-03T04:48:47.000Z" title="发表于 2022-10-03 12:48:47">2022-10-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-10-03T08:43:14.081Z" title="更新于 2022-10-03 16:43:14">2022-10-03</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/SLAM%E4%BB%A3%E7%A0%81%E9%98%85%E8%AF%BB/">SLAM代码阅读</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="A-LOAM问题解决"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="A-LOAM问题解决"><a href="#A-LOAM问题解决" class="headerlink" title="A-LOAM问题解决"></a>A-LOAM问题解决</h1><h2 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h2><p>该模块用于记录阅读代码过程中产生的问题，主要为概念及过程原因</p>
+<h3 id="scanRegistration"><a href="#scanRegistration" class="headerlink" title="scanRegistration"></a>scanRegistration</h3><ol>
+<li><p>去除雷达距离过近的点</p>
+<p>对于激光雷达,其过近的点由于落在车体上,过远的点已经非常稀疏,因此都需要被过滤掉</p>
+</li>
+<li><p>去除点云中的无效点</p>
+<p>无效点是指坐标值为 NaN 的点，NaN表明测量传感器距离到该点的距离值是有问题的，可能是因为传感器太近或太远，实际过程中无法使用</p>
+</li>
+<li><p>-atan2()</p>
+<p>为了使坐标轴的 Y 轴反向，与 bag 包坐标轴对应</p>
+</li>
+<li><p>待处理的点云开始及结束索引不考虑前后五个点</p>
+<p>计算曲率要用到左右相邻的五个点，因此前五个和后五个无法计算曲率</p>
+</li>
+<li><p>每条扫描线分为六部分？？？</p>
+<p>对应论文中将点云按子区域划分的部分，每个部分单独提取，互不干扰，保证特征点均匀分布</p>
+</li>
+<li><p>降采样</p>
+<p>A-LOAM使用 voxelGrid 滤波器，过程为：在点云数据中创建三维体素栅格，然后用每个体素的重心近似表示体素中的其它点(一个点表示栅格所有点)</p>
+</li>
+</ol>
+<h3 id="laserOdometry"><a href="#laserOdometry" class="headerlink" title="laserOdometry"></a>laserOdometry</h3><ol>
+<li><p>KDTree</p>
+<p>二叉查找树，根据不同维度指标值进行划分，用于查找最近邻点</p>
+</li>
+<li><p>KDTree的最近邻搜索算法</p>
+<p>搜索，一直到叶子节点，获得树的搜索路径以及初始最近点</p>
+<p>回溯，按搜索路径向上，更新搜索路径和最近点，直到路径为空</p>
+</li>
+<li><p>为什么ICP迭代两次</p>
+<p>ICP迭代共两次，第一次的优化结果作为第二次优化的初始值，同时整体来看，每次求得的相邻两帧间位姿变换关系会作为下一次相邻两帧优化时的初始值；使用Ceres求解时会对求解的参数进行配置，在A-LOAM中设置Ceres的迭代次数为 4，也就是说两次ICP迭代，在Ceres优化过程中共迭代了八次(仅个人理解)</p>
+</li>
+<li><p>鲁棒核函数( Ceres相关 )</p>
+<p>原因：由于误匹配等原因，将错误的误差项数据加入到优化过程中，但优化算法不能识别，只是将所有数据当作误差处理，而误差很大的数据梯度也很大，意味着调整与它相关的变量会使目标函数下降很多，因此算法会试图调整这个误差相关的变量，而忽略其它正确数据的影响，使优化算法专注于调整一个错误的值</p>
+<p>处理：核函数保证每条边的误差不会过大，以掩盖掉其他数据，具体过程为在误差的二范数增长过快时，替换为增长没那么快的函数，同时保证自己的光滑性质(能求导)。因为该核函数使得整个优化结果更为鲁棒，因称为鲁棒核函数</p>
+</li>
+<li><p>去运动畸变</p>
+<p>即运动补偿，就是把某点云 P 中所有点映射到同一时刻 t，消除由于车辆运动和雷达旋转导致的点云畸变现象</p>
+<p>原因：扫描得到的一帧点云，不是在同一时刻得到的，不同时刻获得的点所处的坐标系已经不同，即变化之后的数据与原点不同，例如可能使原本水平的墙面表示出来是倾斜的，因此为了恢复原数据，需要进行补偿</p>
+<p>处理方式：无其它传感器时常用匀速模型假设，补偿到起始时刻，具体实现为 slerp 球面线性插值</p>
+</li>
+<li><p>各坐标系之间是什么关系</p>
+<p>雷达坐标系和世界坐标系的关系：前端里程计的目的就是估计雷达坐标系在世界坐标系中的位姿</p>
+<p>点云数据所在的坐标系：每一帧点云所在的坐标系就是这一帧扫描时雷达所在的坐标系</p>
+<p>初始位置时的雷达坐标系就是世界坐标系</p>
+</li>
+<li><p>在A-LOAM中，KDTree是如何找到最近点的</p>
+<p>前端里程计直接根据距离找最近点，只要找到不太离谱的初值即可</p>
+<p>后端优化使用上一次的估计变换待匹配的点，再根据距离找最近点</p>
+</li>
+<li><p>激光里程计是干什么的</p>
+<p>激光里程计就是粗略的位姿估计，即高频率低精度的位姿，准确的说是估计雷达坐标系在世界坐标系中的位姿</p>
+<p>参考博客的说法：前端里程计中涉及两个坐标系，<code>/camera_init</code> 以及 <code>/laser_odom</code> 系，可以理解为前端中的全局世界坐标系和载体坐标系，而前端里程计的工作就是通过匹配前后两帧点云来估计载体坐标系在世界坐标系中的位姿，这个估计是高频并且精度相对不高的</p>
+</li>
+<li><p>q_last_curr是谁转换到谁</p>
+<p>目的是要知道当前雷达的姿态与上一帧的点云姿态相比的变化，即q_last_curr,t_last_curr</p>
+<p>注意：读作curr到last的q，也就是curr在last坐标系下的旋转和位置，满足 q_last_curr*curr &#x3D; last</p>
+<p>实际过程只要统一即可，因为旋转矩阵是可逆的，<code>与旋转矩阵相乘</code>和<code>与旋转矩阵的转置相乘</code>可得到从 A-&gt;B 以及从 B-&gt;A 的旋转</p>
+</li>
+<li><p>怎么得到当前帧在世界坐标系下的位姿</p>
+<p>默认初始位置是世界坐标系下的原点，坐标系就是世界坐标系；之后通过与每次优化得到的位姿变换相乘，获得那一帧的世界坐标系下的位姿，不断相乘，就得到了每一帧在世界坐标系下的位姿</p>
+</li>
+</ol>
+<h3 id="laserMapping"><a href="#laserMapping" class="headerlink" title="laserMapping"></a>laserMapping</h3><ol>
+<li><p>坐标系间的关系</p>
+<p>参考博客的说法：后端建图中也涉及两个坐标系，<code>/camera_int</code> 以及 <code>/aft_mapped</code> 系，同样也可以理解为后端中的全局世界坐标系以及载体坐标系，后端的工作是通过将点云以及全局地图进行匹配来估计 <code>/aft_mapped</code> 系在 <code>/camera_int</code> 中的位姿，相对于前端频率较低，但精度较高。可以想象的是后端估计的位姿和前端估计的位姿有一定差异，因此后端中还维护一个转换矩阵（<code>wmap_T_odom</code>），用来将从前端接收到的位姿估计转换至后端估计的位姿，即对前端里程计估计的位姿进行修正</p>
+</li>
+<li><p>保证实时性</p>
+<p>后端优化及建图耗费的时间较长，为了保证实时性，每次接收到<code>前端里程计给出的估计</code>，直接取出<code>后端得到的上一个对里程计位姿的修正</code>，二者相乘，直接输出，作为<code>后端实时的位姿估计</code></p>
+</li>
+<li><p>前后端特征点匹配的区别</p>
+<p><strong>边缘点：</strong></p>
+<p>前端使用<code>当前点</code>与<code>两最近点构成的直线</code>作残差求解</p>
+<p>后端使用<code>当前点</code>与<code>最近五个点特征向量方向上构建的两虚拟点</code>作残差</p>
+<p><strong>平面点：</strong></p>
+<p>前端使用<code>当前点</code>与<code>三个最近点组成的平面</code>作残差</p>
+<p>后端使用<code>当前点</code>与<code>五个最近点拟合出的平面</code>作残差</p>
+</li>
+<li><p>PCA原理</p>
+<p>后端优化过程中边缘点的匹配与前端里程计不同，后端优化找五个最近点</p>
+<p>PCA原理在这儿是指：五个最近点如果满足线状分布，则中心点矩阵的最大的特征值会比另外两个都大，程序中使用3倍作为衡量的标准，即最大特征值 &gt; 3×次大特征值；同时特征向量表明线状分布的直线的方向</p>
+</li>
+<li><p>为什么后端优化和前端里程计中特征点匹配过程不同</p>
+<p>对边缘点来说，点到线的ICP过程要比里程计中的更加鲁棒和准确(同时也更耗时)，因为不是简单粗暴地搜索最近的 <strong>2</strong> 个边缘点作为匹配的线，而是PCA 计算出最近邻的 <strong>5</strong> 个点的主方向作为线的方向，而且还会check直线是不是“足够直”(即三倍标准作判断)</p>
+<p>对于平面点来说，点到面的ICP过程同样比里程计中的要鲁棒和准确(同时也更耗时)，因为不是简单粗暴地搜最近的 3 个平面点构成匹配的平面，而是对最近邻的5个点进行基于最小二乘的平面拟合，而且还会check拟合出的平面是不是“足够平”(即五个点中每个点到平面的距离 &lt; 0.2)</p>
+</li>
+<li><p>cube中的点云是怎么提取的</p>
+<p>每次将匹配的边缘点和平面点转换到世界坐标系下，存入到cube中，不断累加，用于提供后续待匹配的点云</p>
+</li>
+<li><p>点云是以帧的形式存储，怎么转变为以空间划分的cube形式</p>
+<p>每次处理完后，将加入的边缘点和平面点逐个遍历，根据坐标计算其应归属的栅格，而后存入到栅格中</p>
+</li>
+</ol>
+<h2 id="数据变化总结"><a href="#数据变化总结" class="headerlink" title="数据变化总结"></a>数据变化总结</h2><h3 id="整体数据流向"><a href="#整体数据流向" class="headerlink" title="整体数据流向"></a>整体数据流向</h3><p><img src="/2022/10/03/20221003/aloam%E8%8A%82%E7%82%B9%E5%9B%BE.png" alt="aloam节点图"></p>
+<h3 id="各节点中数据变化"><a href="#各节点中数据变化" class="headerlink" title="各节点中数据变化"></a>各节点中数据变化</h3><h4 id="scanRegistration-1"><a href="#scanRegistration-1" class="headerlink" title="scanRegistration"></a>scanRegistration</h4><p><img src="/2022/10/03/20221003/scanRegistration%E6%95%B0%E6%8D%AE%E5%8F%98%E5%8C%96.jpg" alt="scanRegistration数据变化"></p>
+<h4 id="laserOdometry-1"><a href="#laserOdometry-1" class="headerlink" title="laserOdometry"></a>laserOdometry</h4><p><img src="/2022/10/03/20221003/laserOdometry%E6%95%B0%E6%8D%AE%E5%8F%98%E5%8C%96.jpg" alt="laserOdometry数据变化"></p>
+<h4 id="laserMapping-1"><a href="#laserMapping-1" class="headerlink" title="laserMapping"></a>laserMapping</h4><p><img src="/2022/10/03/20221003/laserMapping%E6%95%B0%E6%8D%AE%E5%8F%98%E5%8C%96.jpg" alt="laserMapping数据变化"></p>
+<h2 id="前后端优化区别"><a href="#前后端优化区别" class="headerlink" title="前后端优化区别"></a>前后端优化区别</h2><ol>
+<li><p>里程计使用极大边缘点与次极大边缘点匹配；后端优化使用次极大边缘点与次极大边缘点匹配；平面点同理</p>
+<p>【注】里程计用于待匹配的极大边缘点就是后端优化用于匹配的边缘点</p>
+</li>
+<li><p>里程计是相邻两帧之间匹配；后端优化是当前帧与子图匹配</p>
+</li>
+<li><p>里程计是得到的是连续的位姿变换；后端优化是离散的</p>
+</li>
+<li><p>里程计是高频率低精度；后端优化是低频率高精度</p>
+</li>
+<li><p>边缘点：里程计是当前点与两个最近点组成的线构建残差；后端优化是当前点与五个最近点特征向量虚构的两个点构建残差</p>
+<p>平面点：里程计是当前点与三个最近点组成的面构建残差；后端优化是当前点与五个最近点所拟合平面的法向量构建残差</p>
+</li>
+<li><p>里程计匹配时用的是各自的雷达坐标系；后端优化匹配时使用的是世界坐标系</p>
+</li>
+<li><p>里程计维护的是每一帧到世界坐标系的位姿；后端优化还要维护与里程计估计值的转换</p>
+</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://lmay001.github.io">LMay</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://lmay001.github.io/2022/10/03/20221003/">http://lmay001.github.io/2022/10/03/20221003/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://lmay001.github.io" target="_blank">LMay</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/SLAM/">SLAM</a><a class="post-meta__tags" href="/tags/A-LOAM/">A-LOAM</a><a class="post-meta__tags" href="/tags/%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90/">算法分析</a></div><div class="post_share"><div class="social-share" data-image="https://tucang.cc/api/image/show/6d9e16e56d2d620272da03e3bd7bf532" data-sites="facebook,twitter,wechat,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#A-LOAM%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3"><span class="toc-number">1.</span> <span class="toc-text">A-LOAM问题解决</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3"><span class="toc-number">1.1.</span> <span class="toc-text">问题解决</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#scanRegistration"><span class="toc-number">1.1.1.</span> <span class="toc-text">scanRegistration</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#laserOdometry"><span class="toc-number">1.1.2.</span> <span class="toc-text">laserOdometry</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#laserMapping"><span class="toc-number">1.1.3.</span> <span class="toc-text">laserMapping</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%8F%98%E5%8C%96%E6%80%BB%E7%BB%93"><span class="toc-number">1.2.</span> <span class="toc-text">数据变化总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B4%E4%BD%93%E6%95%B0%E6%8D%AE%E6%B5%81%E5%90%91"><span class="toc-number">1.2.1.</span> <span class="toc-text">整体数据流向</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%84%E8%8A%82%E7%82%B9%E4%B8%AD%E6%95%B0%E6%8D%AE%E5%8F%98%E5%8C%96"><span class="toc-number">1.2.2.</span> <span class="toc-text">各节点中数据变化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#scanRegistration-1"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">scanRegistration</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#laserOdometry-1"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">laserOdometry</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#laserMapping-1"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">laserMapping</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E5%90%8E%E7%AB%AF%E4%BC%98%E5%8C%96%E5%8C%BA%E5%88%AB"><span class="toc-number">1.3.</span> <span class="toc-text">前后端优化区别</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('https://tucang.cc/api/image/show/6d9e16e56d2d620272da03e3bd7bf532')"><div id="footer-wrap"><div class="copyright">&copy;2022 By LMay</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (true){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
