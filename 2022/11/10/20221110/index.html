@@ -1,0 +1,405 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>F-LOAM论文阅读 | LMay</title><meta name="keywords" content="SLAM,论文阅读,F-LOAM"><meta name="author" content="LMay"><meta name="copyright" content="LMay"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="F-LOAM论文阅读笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="F-LOAM论文阅读">
+<meta property="og:url" content="http://lmay001.github.io/2022/11/10/20221110/index.html">
+<meta property="og:site_name" content="LMay">
+<meta property="og:description" content="F-LOAM论文阅读笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://lmay001.github.io/img/cover/%E6%96%87%E7%AB%A0%E5%B0%81%E9%9D%A27.jpg">
+<meta property="article:published_time" content="2022-11-10T02:24:20.000Z">
+<meta property="article:modified_time" content="2022-11-10T03:08:33.874Z">
+<meta property="article:author" content="LMay">
+<meta property="article:tag" content="SLAM">
+<meta property="article:tag" content="论文阅读">
+<meta property="article:tag" content="F-LOAM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://lmay001.github.io/img/cover/%E6%96%87%E7%AB%A0%E5%B0%81%E9%9D%A27.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://lmay001.github.io/2022/11/10/20221110/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'F-LOAM论文阅读',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-11-10 11:08:33'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/background/%E5%A4%B4%E5%83%8F.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-thin fa-address-card"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/cover/%E6%96%87%E7%AB%A0%E5%B0%81%E9%9D%A27.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">LMay</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-thin fa-address-card"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">F-LOAM论文阅读</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-11-10T02:24:20.000Z" title="发表于 2022-11-10 10:24:20">2022-11-10</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-11-10T03:08:33.874Z" title="更新于 2022-11-10 11:08:33">2022-11-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/SLAM%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">SLAM论文阅读</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="F-LOAM论文阅读"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>论文总结</h1>
+<p><strong>主要工作</strong>：提出了一个计算高效的激光 SLAM 框架，旨在为计算资源有限的机器人应用程序提供公共解决办法</p>
+<p><strong>算法特点</strong>：计算成本和定位精度的较好平衡</p>
+<p><strong>核心思想</strong>：</p>
+<ol>
+<li>使用非迭代的两步失真补偿方法替换计算成本较高的迭代失真补偿方法</li>
+<li>将局部几何特征应用于迭代位姿估计，具体表现就是权重函数</li>
+</ol>
+<p><strong>创新点</strong>：</p>
+<ol>
+<li>非迭代的两步失真补偿方法</li>
+<li>将局部几何特征应用于迭代位姿估计</li>
+</ol>
+<p><strong>算法结果</strong>：</p>
+<ol>
+<li>算法在室内环境测试实现 2cm 的平均定位精度</li>
+<li>是 KITTI 数据集中最准确和最快的开源算法之一</li>
+</ol>
+<p>个人理解：取消了里程计算法，降低计算成本，只使用匀速假设模型简单处理，直接使用Mapping</p>
+<h1>Abstract</h1>
+<ol>
+<li>
+<p>对于一个好的SLAM系统，计算效率和定位精度都很重要</p>
+</li>
+<li>
+<p>现有的基于雷达的SLAM通常把问题分为两部分</p>
+<p>scan-to-scan 的匹配</p>
+<p>scan-to-map 的优化</p>
+</li>
+<li>
+<p>两个模块都通过迭代计算求解，计算代价很高</p>
+</li>
+<li>
+<p>本文提出一个通用的解决办法，旨在为基于雷达的SLAM提供一个高效精确的框架</p>
+</li>
+<li>
+<p>具体的说，提出了一个非迭代的两阶段失真补偿方法降低计算量</p>
+</li>
+<li>
+<p>每一帧，提取边缘和平面特征，分别与局部边缘地图和局部平面地图匹配，同时考虑迭代位姿优化时的光滑度</p>
+</li>
+<li>
+<p>在一些场景中实验评估性能，包括AGV的定位和公共数据集</p>
+</li>
+<li>
+<p>结果表明，在公共数据集的评估中，该方法在处理速度大于10Hz的情况下，定位精度方面有竞争力，平衡了实际应用中的性能和计算代价</p>
+</li>
+<li>
+<p>是KITTI排名中最准确和最快的开源SLAM系统之一</p>
+</li>
+</ol>
+<h1>I. INTRODUCTION</h1>
+<ol>
+<li>
+<p>SLAM 简介</p>
+<p>SLAM 是什么；SLAM 分类，激光，视觉；激光SLAM 的优势</p>
+</li>
+<li>
+<p>现有工作</p>
+<p>公共数据集表现较好，但实际应用中存在限制：</p>
+<p>限制一：对不同环境的鲁棒性 (室内室外；静态动态)</p>
+<p>限制二：计算成本 (嵌入式系统计算资源不足)</p>
+<p>此外，很多算法不开源，因为很难得到相同的结果</p>
+</li>
+<li>
+<p>常用方法</p>
+<p>第一种，ICP，最经典，最小化点云距离对齐两帧，但点太多，效率很低</p>
+<p>第二种，以LOAM为代表的特征点匹配，但迭代计算的计算成本仍然较高</p>
+</li>
+<li>
+<p>本文提出的算法</p>
+<p>本文提出一种轻量的激光SLAM，旨在提供实时的解决方案；</p>
+<p>一个结合特征提取，失真补偿，位姿优化和建图的框架；</p>
+<p>用非迭代的两步失真补偿方法替代传统的迭代失真补偿方法</p>
+<p>迭代位姿估计考虑局部几何特征以提高定位精度</p>
+<p>一系列实验结果表明本文算法能以较低成本实现具有竞争力的定位精度，即性能和速度的良好平衡</p>
+<p>是KITTI基准测试中最准确和最快的开源方法之一</p>
+</li>
+<li>
+<p>内容安排</p>
+<p>第二节介绍现有SLAM 相关工作</p>
+<p>第三节介绍所提出算法的细节</p>
+<p>第四节介绍实验结果</p>
+<p>第五节说明结论</p>
+</li>
+</ol>
+<h1>II. RELATED WORK</h1>
+<p>当前已有的一些工作</p>
+<ol>
+<li>
+<p>激光SLAM最重要的步骤是点云匹配，当前主要有两种方式</p>
+<p>原始点云匹配</p>
+<p>特征点匹配</p>
+</li>
+<li>
+<p>原始点云匹配</p>
+<p>ICP：最经典，找最近点，最小化对应点间距离残差</p>
+<p>IMLS-SLAM：有改进，由IMLS设权重，但计算成本很高</p>
+</li>
+<li>
+<p>特征点匹配</p>
+<p>基于特征的方法主要利用点到线/面的距离，由LOAM提出，被广泛使用</p>
+<p>LeGO-LOAM在特征提取前进行地面分离，获得了更好的性能</p>
+<p>地面点对x-y平面没有贡献，因此去掉地面点的方式广泛应用于地面车辆</p>
+</li>
+<li>
+<p>引入额外的模块提升性能</p>
+<p>引入回环检测模块，解决长时间SLAM中激光SLAM不可避免的漂移问题</p>
+<p>LOL算法中，将激光SLAM扩展到有回环的完整SLAM</p>
+<p>LIO-SLAM中，提出IMU和GPS融合的方式</p>
+<p>结果证明融合方式能提高定位精度，但多传感器融合需要同步和综合校准</p>
+</li>
+<li>
+<p>与深度学习结合</p>
+<p>使用卷积神经网络进行点云处理，通过CNN训练提取特征点</p>
+<p>CAE-LO中，通过CAE提出基于深度学习的特征点选择规则，里程计仍基于特征点匹配</p>
+<p>试验结果表明深度学习能提高匹配成功率，但不同环境中不具备鲁棒性</p>
+</li>
+</ol>
+<h1>III. METHODOLOGY</h1>
+<h2 id="A-Sensor-Model-and-Feature-Extraction">A. Sensor Model and Feature Extraction</h2>
+<ol>
+<li>激光雷达行数为 M，扫描 k 表示为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>k</mi></msub></mrow><annotation encoding="application/x-tex">P_k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> ，其中每个点表示为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi mathvariant="bold">p</mi><mi>k</mi><mrow><mo fence="true">(</mo><mi>m</mi><mo separator="true">,</mo><mi>n</mi><mo fence="true">)</mo></mrow></msubsup></mrow><annotation encoding="application/x-tex">\mathbf{p}_{k}^{\left( m,n \right)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.3461em;vertical-align:-0.3013em;"></span><span class="mord"><span class="mord mathbf">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.0448em;"><span style="top:-2.3987em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span style="top:-3.2198em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="minner mtight"><span class="mopen mtight delimcenter" style="top:0em;"><span class="mtight">(</span></span><span class="mord mathnormal mtight">m</span><span class="mpunct mtight">,</span><span class="mord mathnormal mtight">n</span><span class="mclose mtight delimcenter" style="top:0em;"><span class="mtight">)</span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3013em;"><span></span></span></span></span></span></span></span></span></span> ，m和n为行列</li>
+<li>使用特征匹配，丢弃噪声和不重要的点</li>
+<li>计算每个点的平滑度 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>σ</mi><mi>k</mi><mrow><mo fence="true">(</mo><mi>m</mi><mo separator="true">,</mo><mi>n</mi><mo fence="true">)</mo></mrow></msubsup></mrow><annotation encoding="application/x-tex">\sigma _{k}^{\left( m,n \right)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.3461em;vertical-align:-0.3013em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.0448em;"><span style="top:-2.3987em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span style="top:-3.2198em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="minner mtight"><span class="mopen mtight delimcenter" style="top:0em;"><span class="mtight">(</span></span><span class="mord mathnormal mtight">m</span><span class="mpunct mtight">,</span><span class="mord mathnormal mtight">n</span><span class="mclose mtight delimcenter" style="top:0em;"><span class="mtight">)</span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3013em;"><span></span></span></span></span></span></span></span></span></span>，与LOAM相同，取前后五个点</li>
+<li>选取方式也与LOAM相同，平滑度高的为边缘点，低的为平面点；最终得到边缘点集 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ε</mi><mi>k</mi></msub></mrow><annotation encoding="application/x-tex">\varepsilon _k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">ε</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，平面点集 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>k</mi></msub></mrow><annotation encoding="application/x-tex">S_k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0576em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></li>
+</ol>
+<h2 id="B-Motion-Estimation-and-Distortion-Compensation">B. Motion Estimation and Distortion Compensation</h2>
+<ol>
+<li>
+<p>现有的LOAM，LeGO-LOAM算法通过scan-to-scan进行失真校正；但迭代计算求解变换矩阵的方式计算效率低</p>
+</li>
+<li>
+<p>本文提出两步失真补偿的方式降低计算成本</p>
+<p>setp1：假定短时间内以恒定角速度和线速度预测运动并校正失真</p>
+<p>step2：位姿估计之后重新计算失真，将校正过的特征点更新到最终地图</p>
+</li>
+<li>
+<p>试验结果表明，两步失真补偿达到相似精度时，计算成本要低得多</p>
+</li>
+<li>
+<p>使用 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>k</mi></msub></mrow><annotation encoding="application/x-tex">T_k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 表示扫描 k 时的4×4齐次变换矩阵</p>
+</li>
+</ol>
+<p>【】个人理解：就是通过<strong>匀速模型假设</strong>和<strong>线性插值</strong>进行<strong>运动补偿</strong></p>
+<h2 id="C-Pose-Estimation">C. Pose Estimation</h2>
+<ol>
+<li>位姿估计将校正过的特征点与全局特征地图匹配</li>
+<li>边缘点计算全局边缘特征地图附近点的协方差矩阵，若线性分布，最大特征向量即为线的方向</li>
+<li>平面点同样计算协方差矩阵，得到一个平面</li>
+<li>通过优化特征点到对应特征的方式求解位姿变换关系</li>
+<li>传统特征匹配只优化几何距离，不考虑特征点的局部几何分布，但特征点通常在联系扫描过程中被一致的提取，因此引入权重函数平衡匹配过程</li>
+<li>使用平滑度进行权重定义，通过最小化加权距离估计位姿</li>
+<li>最优位姿估计通过高斯牛顿法求解非线性方程得到，迭代直到收敛</li>
+</ol>
+<h2 id="D-Mapping-Building-Distortion-Compensation-Update">D. Mapping Building &amp; Distortion Compensation Update</h2>
+<ol>
+<li>全局地图由全局边缘地图和全局平面地图组成，根据关键帧进行更新</li>
+<li>关键帧的选择由设定好的旋转或平移阈值决定，超过阈值则选取</li>
+<li>失真补偿是匀速运动假设，因此准确度不如LOAM的迭代失真补偿准确，因此第二阶段，根据优化结果重新计算失真</li>
+<li>重新校正过的边缘和平面特征将全局边缘和平面地图进行更新</li>
+<li>每次更新后，降采样，防止内存溢出</li>
+</ol>
+<h1>IV. EXPERIMENT EVALUATION</h1>
+<h2 id="A-Experiment-Setup">A. Experiment Setup</h2>
+<ol>
+<li>使用大规模室外环境和中等规模室内环境对算法进行评估</li>
+<li>大规模实验使用KITTI数据集</li>
+<li>中等规模实验使用仓储物流环境，分别在环境中和AGV平台上测试</li>
+</ol>
+<h2 id="B-Evaluation-on-Public-Dataset">B. Evaluation on Public Dataset</h2>
+<p>使用 KITTI 中的 00-10 序列进行评估，评价指标采用平均平移误差 ATE 和平均旋转误差 ARE</p>
+<ol>
+<li>
+<p>实验结果：在11个序列上实现了 0.8% 的 ATE 和 0.0048°/m 的 ARE</p>
+<p><img src="/2022/11/10/20221110/KITTI%E6%95%B0%E6%8D%AE%E9%9B%86%E7%BB%93%E6%9E%9C.png" alt="KITTI数据集结果"></p>
+</li>
+<li>
+<p>将本文算法与目前最先进的算法作比较，包括视觉和激光，使用相同处理器的计算机对时间进行评估</p>
+</li>
+<li>
+<p>为保证一致性，不使用IMU和回环检测，基于同一环境进行测试</p>
+</li>
+<li>
+<p><img src="/2022/11/10/20221110/%E5%90%84%E7%AE%97%E6%B3%95%E5%AF%B9%E6%AF%94%E7%BB%93%E6%9E%9C.png" alt="各算法对比结果"></p>
+<p>与个算法比较结果表明：</p>
+<p>IMLS-SLAM 最准确，但速度很慢；</p>
+<p>激光 SLAM 中，LeGO-LOAM 最快，因为它只使用非地面点进行优化；</p>
+<p>本文提出的算法以超过 10Hz 的平均处理速率达到了第二高的精度，实现计算成本和定位精度之间较好的平衡</p>
+</li>
+<li>
+<p>综上所述，本文提出的算法能为实时机器人应用提供快速和准确的 SLAM 解决方案，并且在最先进的方法中具有竞争力</p>
+</li>
+</ol>
+<h2 id="C-Experiment-on-warehouse-logistics">C. Experiment on warehouse logistics</h2>
+<p>本实验的目的是建造一个自动的仓储机器人，AGV旨在执行运输等任务，这要求机器人平台能在复杂环境中主动定位自己</p>
+<p>以下实验证明了F-LOAM在实际应用中的鲁棒性</p>
+<h3 id="Simulation">Simulation</h3>
+<p>首先使用模拟环境验证算法，模拟环境重构了一个复杂的仓库环境，实验证明本文提出的方法能够在人类操作员在仓库环境中行走的动态环境下跟踪高速移动的 AGV</p>
+<p><img src="/2022/11/10/20221110/%E4%BB%93%E5%BA%93%E6%A8%A1%E6%8B%9F%E7%8E%AF%E5%A2%83.png" alt="仓库模拟环境"></p>
+<h3 id="Experiment">Experiment</h3>
+<p>为进一步证明算法性能，在实际的AGV上实现F-LOAM，并在真实仓储环境中测试</p>
+<p><img src="/2022/11/10/20221110/%E4%BB%93%E5%BA%93%E7%9C%9F%E5%AE%9E%E7%8E%AF%E5%A2%83.png" alt="仓库真实环境"></p>
+<h3 id="Performance-evaluation">Performance evaluation</h3>
+<p>在室内环境中使用F-LOAM进行测试，以评估定位精度</p>
+<p><img src="/2022/11/10/20221110/%E5%AE%A4%E5%86%85%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C.png" alt="室内环境测试结果"></p>
+<p>结果表明，F-LOAM能实现与真值相比 2cm 的平均定位精度</p>
+<h3 id="Ablation-study">Ablation study</h3>
+<p>消融实验，评估本文提出的失真补偿方法的性能，分为三部分：</p>
+<ul>
+<li>去掉失真补偿的 F-LOAM</li>
+<li>使用 LOAM 中的迭代失真补偿方法的 F-LOAM</li>
+<li>使用本文提出的失真补偿方法的 F-LOAM</li>
+</ul>
+<p><img src="/2022/11/10/20221110/%E5%A4%B1%E7%9C%9F%E8%A1%A5%E5%81%BF%E6%96%B9%E6%B3%95%E6%B6%88%E8%9E%8D%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C.png" alt="失真补偿方法消融实验结果"></p>
+<p>结果表明本文提出的失真补偿方法比LOAM的迭代补偿方法快的多，同时定位精度也更高</p>
+<h1>V. CONCLUSION</h1>
+<ol>
+<li>
+<p>本文提出了一个计算高效的激光 SLAM 框架，旨在为计算资源有限的机器人应用程序提供公共解决办法</p>
+</li>
+<li>
+<p>与传统方法相比，本文提出非迭代的两步失真补偿方法降低计算成本</p>
+</li>
+<li>
+<p>边缘和平面特征被连续帧一致提取，因此将局部几何特征应用于迭代姿态估计，具体表现就是加权重</p>
+</li>
+<li>
+<p>为了证明本文提出的方法在实际应用中的鲁棒性，进行一系列实验测试</p>
+</li>
+<li>
+<p>结果为：</p>
+<p>算法在室内测试实现 2cm 的平均定位精度</p>
+<p>是 KITTI 数据集中最准确和最快的开源算法之一</p>
+</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://lmay001.github.io">LMay</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://lmay001.github.io/2022/11/10/20221110/">http://lmay001.github.io/2022/11/10/20221110/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://lmay001.github.io" target="_blank">LMay</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/SLAM/">SLAM</a><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a><a class="post-meta__tags" href="/tags/F-LOAM/">F-LOAM</a></div><div class="post_share"><div class="social-share" data-image="/img/cover/%E6%96%87%E7%AB%A0%E5%B0%81%E9%9D%A27.jpg" data-sites="facebook,twitter,wechat,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">论文总结</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">I. INTRODUCTION</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">4.</span> <span class="toc-text">II. RELATED WORK</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">5.</span> <span class="toc-text">III. METHODOLOGY</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#A-Sensor-Model-and-Feature-Extraction"><span class="toc-number">5.1.</span> <span class="toc-text">A. Sensor Model and Feature Extraction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#B-Motion-Estimation-and-Distortion-Compensation"><span class="toc-number">5.2.</span> <span class="toc-text">B. Motion Estimation and Distortion Compensation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-Pose-Estimation"><span class="toc-number">5.3.</span> <span class="toc-text">C. Pose Estimation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#D-Mapping-Building-Distortion-Compensation-Update"><span class="toc-number">5.4.</span> <span class="toc-text">D. Mapping Building &amp; Distortion Compensation Update</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">6.</span> <span class="toc-text">IV. EXPERIMENT EVALUATION</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#A-Experiment-Setup"><span class="toc-number">6.1.</span> <span class="toc-text">A. Experiment Setup</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#B-Evaluation-on-Public-Dataset"><span class="toc-number">6.2.</span> <span class="toc-text">B. Evaluation on Public Dataset</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-Experiment-on-warehouse-logistics"><span class="toc-number">6.3.</span> <span class="toc-text">C. Experiment on warehouse logistics</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Simulation"><span class="toc-number">6.3.1.</span> <span class="toc-text">Simulation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Experiment"><span class="toc-number">6.3.2.</span> <span class="toc-text">Experiment</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Performance-evaluation"><span class="toc-number">6.3.3.</span> <span class="toc-text">Performance evaluation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Ablation-study"><span class="toc-number">6.3.4.</span> <span class="toc-text">Ablation study</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">7.</span> <span class="toc-text">V. CONCLUSION</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('/img/cover/%E6%96%87%E7%AB%A0%E5%B0%81%E9%9D%A27.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2022 By LMay</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (true){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><script src="/js/search/local-search.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
