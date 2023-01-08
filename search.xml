@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>计算机教育中缺失的一课</title>
+      <link href="/2023/01/08/20230108/"/>
+      <url>/2023/01/08/20230108/</url>
+      
+        <content type="html"><![CDATA[<h1>计算机教育中缺失的一课</h1><h2 id="课程概览与shell">课程概览与shell</h2><p>Q：什么是shell？</p><p>A：计算机有多种交互接口供用户输入指令，但图像用户界面(Graphical User Interface, GUI)的存在限制了指令的输入，因为不可能点击不存在的按钮或语音输入不存在的指令，因此使用最原始或者说最根本的方式，文字接口：Shell</p><p>Bourne Again SHell, 简称 “bash” ，是使用最广泛的一种shell</p><p>输入命令，之后被shell解析，shell基于空格分割命令并进行解析，与Python等一样，shell是一个编程环境，在shell中执行命令，实际上是在执行一段shell可以解释执行的代码，如果指令不是shell的编程关键字，会在环境变量<code>$PATH</code>中找</p><h2 id="Shell工具和脚本">Shell工具和脚本</h2><p>Q：shell脚本是什么？</p><p>A：shell就类似或者说就是一门编程语言，和C++、Python一样，有自己的语法，关键字等，使用shell编写程序实现的一些简单的功能，就是shell脚本<br>shell脚本使用领域与C++等不同，shell用于Linux上一些小功能的实现，我个人理解是为了省去逐条命令会产生的中间文件，直接将多个步骤产生的输出作为下一个输入，实现一个完成的功能，不必一条命令一条命令进行操作</p><p>shell工具</p><p>一些方便日常使用的工具，例如<code>find</code>工具用来查找，与其它命令融合完成工作</p><h2 id="编辑器-Vim">编辑器(Vim)</h2><p>写作和写代码之间的区别是很大的，就像<code>word</code> 和 <code>VSCode</code>的区别一样，写代码经常在多个文件之间切换，修改，而不会连续编写一大段文字</p><p>Vim避免使用鼠标，方向键等，熟练以后能大幅提升效率<br>Vim的界面本身就是一个程序语言，键入操作就是命令<br>Vim可通过修改配置文件自定义和扩展Vim</p><h2 id="数据整理">数据整理</h2><p>将某种格式存储的数据转换成另一种格式</p><p>通常借助<code>正则表达式</code>和其它工具配合，以达到想要的效果，例如 <code>sed</code>、<code>awk</code> 等工具</p><p>实际就是通过各种工具进行配合，实现想要对数据进行的操作，例如<br>从日志中找到连接服务的用户，同一个用户多条记录合并，结果按次数排序</p><h2 id="命令行环境">命令行环境</h2><h3 id="任务控制">任务控制</h3><p>通过信号机制执行进程间的通信，一个进程收到信号后会有以下行为，停止执行、处理信号、基于信号传递的信息改变执行过程</p><p><code>ctrl+c</code> 可结束进程，是通过发送信号到进程实现的，进程接收到后终止<br><code>ctrl+z</code> 可暂停进程，<code>fg</code> 和 <code>bg</code> 可分别在前台和后台恢复暂停的工作<br><code>jobs</code> 可列出当前终端中未完成的全部任务，可使用 <code>pid</code> 引用这些任务</p><h3 id="终端多路复用">终端多路复用</h3><p>不打开新的终端窗口，而是分割出多个终端窗口，同时执行多个任务</p><p><code>tmux</code> 是目前最流行的终端多路复用器</p><p>难度不高，只需多使用，熟练即可</p><h3 id="别名">别名</h3><p>频繁输入一长串命令过于麻烦，因此可将长命令起别名，直接使用别名即可</p><p>常使用 <code>alias</code> 起别名，格式为 <code>alias 别名=&quot;命令内容&quot;</code> ，禁用使用<code>unalias</code><br>注意，<code>=</code> 两边没空格，且 <code>alias</code> 只接受一个参数</p><p>默认情况下，shell不保存别名，若要持续生效，需要将配置放进shell的启动文件</p><h3 id="配置文件">配置文件</h3><p>很多程序的配置文件都是纯文本格式，因以<code>.</code>开头，成为点文件，默认是隐藏文件</p><p>对于<code>bash</code>来说，可通过编辑<code>.bashrc</code>文件实现，可根据自身需求修改配置文件，启动时shell程序会加载配置项</p><p>配置文件有个问题，可能不能在不同系统或shell上生效，所以可根据需求，针对不同设备编写不同配置，通过if实现</p><h3 id="远端设备">远端设备</h3><p>SSH，Secure Shell，安全shell，在不安全的网络上用于安全的远程登录</p><p>连接其它服务器格式为：<code>ssh user_name@server</code><br>指以用户名 <code>user_name</code> 登录服务器 <code>server</code>，服务器可通过URL或IP指定，例如：<br><code>ssh foo@bar.mit.edu</code> (URL指定)、<code>ssh foobar@192.168.1.42</code> (IP指定)</p><p>为避免每次登录都输入密码的麻烦，SSH密钥使用了公钥，即只需要向服务器证明客户端持有对应私钥即可，而不必公开私钥<br>私钥等同于密码,一般为<code>~/.ssh/id_rsa</code> 或 <code>~/.ssh/id_ed25519</code><br><code>ssh</code> 会查询 <code>.ssh/authorized_keys</code> 来确认那些用户可以被允许登录</p><h2 id="版本控制">版本控制</h2><p>版本控制系统(VCS)是一类用于追踪源码，文件等改动的工具</p><p>Git的数据模型只包括两部分：tree(树，指目录) blob(数据，指文件)<br>数据对象有三种：blob，tree，commit</p><p>Git仓库：<code>对象</code> 和 <code>引用</code></p><p>强烈推荐 <code>Pro Git</code> 作为学习Git的教材</p><h2 id="调试及性能分析">调试及性能分析</h2><h3 id="调试代码">调试代码</h3><p>可使用多种方式调试程序，输出语句、日志、调试器<br>一些情况下需要查看网络数据包才能定位问题，可使用 <code>Wireshark</code> 工具<br>静态分析工具可在不运行程序情况下分析出一些简单的问题</p><h3 id="性能分析">性能分析</h3><p>通过计算程序前后花费的时间进行分析</p><p>使用一些性能分析工具进行性能分析<br>例如cpu和内存</p><p>其他的完全看不懂，基础再学点回头再看…</p><h2 id="元编程">元编程</h2><p>项目有完整的流程，而非写完代码即可</p><h3 id="构建系统">构建系统</h3><p>大多数系统，都有一个 <code>构建过程</code> ，要执行一系列操作，可通过工具实现</p><p>这些工具本质上很相似，只需要定义 <code>依赖</code>、<code>目标</code>、<code>规则</code>，即：</p><blockquote><p>您必须告诉构建系统您具体的构建目标<br>系统的任务则是找到构建这些目标所需要的依赖<br>并根据规则构建所需的中间产物，直到最终目标被构建出来</p></blockquote><p><code>make</code> 是最常用的系统之一，对于中小型项目来说足够<br>当执行 <code>make</code> 时，会参考当前目录下名为 <code>Makefile</code> 的文件，所有构建目标、相关依赖和规则都需要在该文件中定义</p><h3 id="依赖管理">依赖管理</h3><p>就构建的项目而言，依赖可能是某些程序(例如 <code>python</code>)、系统包 (例如 <code>openssl</code>)或相关编程语言的库(例如 <code>matplotlib</code>)</p><p>对于依赖，需要关注依赖的版本号，为防止依赖不可用，要注意版本控制</p><p>版本号一般格式为：<code>主版本号.次版本号.修订号</code>，版本号递增规则如下：</p><blockquote><ol><li>主版本号：当你做了不兼容的 API 修改</li><li>次版本号：当你做了向下兼容的功能性新增</li><li>修订号：当你做了向下兼容的问题修正</li></ol><p>先行版本号及版本编译信息可以加到“主版本号.次版本号.修订号”的后面，作为延伸</p><p><strong>可以理解为：</strong></p><ul><li>如果新的版本没有改变 API，请将补丁号递增；</li><li>如果您添加了 API 并且该改动是向后兼容的，请将次版本号递增；</li><li>如果您修改了 API 但是它并不向后兼容，请将主版本号递增。</li></ul></blockquote><h3 id="持续集成系统">持续集成系统</h3><p>随着项目规模增大，修改代码之后还有很多额外工作，例如上传一份新版本的文档、上传编译后的文件到某处、发布代码到 pypi，执行测试套件等等</p><p>持续集成(CI)指的就是 <code>代码变动时，自动运行的东西</code>，市场上有很多CI工具存在</p><p>CI的工作原理基本一致，即：<br>用户在代码仓库中添加一个文件，描述当前仓库发生任何修改时，应该如何应对</p><h2 id="安全和密码学">安全和密码学</h2><h3 id="熵">熵</h3><p>通过 <code>熵</code> 度量不确定性并可以用来决定密码的强度，单位为比特<br>对于均匀分布的随机离散变量，熵=<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi>log</mi><mo>⁡</mo></mrow><mn>2</mn></msub><mi>n</mi></mrow><annotation encoding="application/x-tex">\log_2n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9386em;vertical-align:-0.2441em;"></span><span class="mop"><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.207em;"><span style="top:-2.4559em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2441em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">n</span></span></span></span> (其中n是可能的个数)<br>大约40比特的熵足以对抗在线穷举攻击，而对于离线穷举攻击需要80比特或更多</p><h3 id="散列函数">散列函数</h3><p><code>密码散列函数</code> 可以将任意大小的数据映射为一个固定大小的输出，大致规范为：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hash(value: array&lt;byte&gt;) -&gt; vector&lt;byte, N&gt;  (N对于该函数固定)</span><br></pre></td></tr></table></figure><p>例如，<code>SHA-1</code>是Git中使用的一种散列函数， 它可以将任意大小的输入映射为一个160比特（可被40位十六进制数表示）的输出</p><p>总结：散列函数可以被认为是一个不可逆，且看上去随机（但具确定性）的函数</p><p>密码散列函数的应用，例如文件的信息摘要：<br>在非官方镜像站下载的ISO镜像，通过比较与官方镜像给出的哈希值，判断安装文件是否被篡改</p><h3 id="对称加密">对称加密</h3><p>加密首先想到隐藏明文信息，对称加密使用以下几个方法来实现这个功能：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">keygen() -&gt; key  (这是一个随机方法)</span><br><span class="line"></span><br><span class="line">encrypt(plaintext: array&lt;byte&gt;, key) -&gt; array&lt;byte&gt;  (输出密文)</span><br><span class="line">decrypt(ciphertext: array&lt;byte&gt;, key) -&gt; array&lt;byte&gt;  (输出明文)</span><br></pre></td></tr></table></figure><p>加密方法输出的密文，很难在没有 <code>key</code> (密钥)的情况下得出明文<br>解密方法只有在给定密文及其密钥才能输出明文</p><h3 id="非对称加密">非对称加密</h3><p><code>非对称</code> 代表在其环境中，使用两个具有不同功能的密钥： 一个是私钥，不向外公布；另一个是公钥，公布公钥不影响加密体系的安全性</p><p>非对称加密使用以下几个方法来实现加密/解密，以及签名/验证：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">keygen() -&gt; (public key, private key)  (这是一个随机方法)</span><br><span class="line"></span><br><span class="line">encrypt(plaintext: array&lt;byte&gt;, public key) -&gt; array&lt;byte&gt;  (输出密文)</span><br><span class="line">decrypt(ciphertext: array&lt;byte&gt;, private key) -&gt; array&lt;byte&gt;  (输出明文)</span><br><span class="line"></span><br><span class="line">sign(message: array&lt;byte&gt;, private key) -&gt; array&lt;byte&gt;  (生成签名)</span><br><span class="line">verify(message: array&lt;byte&gt;, signature: array&lt;byte&gt;, public key) -&gt; bool  (验证签名是否是由和这个公钥相关的私钥生成的)</span><br></pre></td></tr></table></figure><p>即给定密文及私钥才能打开密文</p><p>对称加密相当于防盗门，有钥匙的都可以打开；非对称加密相当于挂锁，拥有者可将打开状态的挂锁(公钥)给任何人并保留唯一的钥匙，当内容被锁上后，只有拥有者可以用保留的钥匙打开</p><h2 id="大杂烩">大杂烩</h2><h3 id="修改键位映射">修改键位映射</h3><p>可对键盘上的键触发的事件进行修改，改变键盘按键的键位映射</p><p>可使用 <code>AutoHotkey</code> 等工具实现</p><h3 id="守护进程">守护进程</h3><p>大部分计算机都有一系列在后台保持运行，不需要用户手动运行或者交互的进程。这些进程就是守护进程</p><h3 id="API-应用程序接口">API(应用程序接口)</h3><p>可通过编程方式来访问提供API的服务的数据</p><h3 id="VPN">VPN</h3><p>使用VPN后，发出的流量看上去来源于 VPN 供应商的网络而不是“真实”地址，同时你实际接入的网络只能看到加密的流量</p><p>实际上使用 VPN 只是把原本对网络供应商的信任放在了 VPN 供应商那里——网络供应商能看到的，VPN 供应商也都能看到</p><h3 id="开机引导及Live-USB">开机引导及Live USB</h3><p>计算机启动时，<code>BIOS</code> 或 <code>UEFI</code> 会在加载操作系统前对硬件系统初始化，称为引导</p><p>可在引导菜单中选择硬盘以外的设备加载操作系统，例如 <code>Live USB</code></p><p><code>Live USB</code> 是包含完整操作系统的闪存盘，用于安装系统，修复数据等多种用途</p><h3 id="Docker-Vagrant-VMs-Cloud-OpenStack">Docker, Vagrant, VMs, Cloud, OpenStack</h3><p><code>虚拟机</code> 以及 <code>容器化</code> 等工具可以帮助，模拟一个包括操作系统的完整计算机系统<br><code>虚拟机</code> 可用于创建独立的测试或开发环境，以及安全测试的沙盒</p><p><code>虚拟机</code> 和 <code>容器</code> 的区别：<br>虚拟机会执行整个OS栈，包括内核(即使和主机内核一致)；<br>容器避免运行其它内核实例，与主机分享内核；隔离性较弱，只有在与主机运行相同内核时才能正常工作；<br>因此，容器的开销小于完整的虚拟机</p><h3 id="交互式笔记本编程">交互式笔记本编程</h3><p><code>交互式记事本</code> 可以帮助开发者进行与运行结果交互等探索性的编程。现在最受欢迎的交互式记事本环境大概是 <code>Jupyter</code></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 基础知识学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 杂谈 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>F-LOAM论文阅读</title>
       <link href="/2022/11/10/20221110/"/>
       <url>/2022/11/10/20221110/</url>
@@ -80,9 +105,9 @@
             
             <tag> SLAM </tag>
             
-            <tag> LeGO-LOAM </tag>
-            
             <tag> 论文阅读 </tag>
+            
+            <tag> LeGO-LOAM </tag>
             
         </tags>
       
@@ -109,9 +134,9 @@
             
             <tag> SLAM </tag>
             
-            <tag> 论文阅读 </tag>
-            
             <tag> LOAM </tag>
+            
+            <tag> 论文阅读 </tag>
             
         </tags>
       
