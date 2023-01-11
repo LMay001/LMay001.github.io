@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>tmux基础</title>
+      <link href="/2023/01/12/20230112/"/>
+      <url>/2023/01/12/20230112/</url>
+      
+        <content type="html"><![CDATA[<h1>tmux基础</h1><h2 id="介绍">介绍</h2><p><code>tmux</code> 有两个特点：</p><ul><li>窗口管理 (Window management)</li><li>会话管理 (Session management)</li></ul><h2 id="下载">下载</h2><p>Ubuntu等非Mac终端使用以下命令：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install tmux</span><br></pre></td></tr></table></figure><h2 id="使用">使用</h2><p>一般情况下，除打开第一个Session外，<code>tmux</code> 命令需进行两部分操作：</p><p>​前置键 ：<code>C-b</code>，即同时按住 <code>ctrl</code> 和 <code>b</code> ，之后根据需要输入命令键</p><p>​命令键 ：根据需要进行输入，例如 <code>%,c,&quot;</code> 等键</p><p>1.打开一个新Session：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tmux</span><br></pre></td></tr></table></figure><p>2.分割窗格：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Ctrl-b     %     <span class="comment"># 分为左右两个窗格</span></span><br><span class="line">Ctrl-b     <span class="string">&quot;     # 分为上下两个窗格</span></span><br></pre></td></tr></table></figure><p>3.关闭窗格：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">exit</span>   或    Ctrl-d</span><br></pre></td></tr></table></figure><p>4.创建窗口：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Ctrl-b     c     <span class="comment"># 会建一个新窗口，同时旧窗口不删除</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 窗口之间的切换(左下角状态栏排序代表各窗口之间的顺序)</span></span><br><span class="line">Ctrl-b     p     <span class="comment"># 切换到前一个窗口</span></span><br><span class="line">Ctrl-b     n     <span class="comment"># 切换到后一个窗口</span></span><br><span class="line">Ctrl-b     [number]     <span class="comment"># 切换到number指定的窗口</span></span><br><span class="line"><span class="comment"># [注] [number]是状态栏中窗口名字前的数字</span></span><br></pre></td></tr></table></figure><p>5.Session处理</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 分离会话</span></span><br><span class="line">Ctrl-b     d     <span class="comment"># 分离当前会话</span></span><br><span class="line">Ctrl-b     D     <span class="comment"># 给出所有会话，选择分离哪个</span></span><br><span class="line"><span class="comment"># [注] 分离后的会话将在后台运行，任何时间点可返回该会话</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看当前存在的会话(重新连接旧会话前的操作)</span></span><br><span class="line">tmux <span class="built_in">ls</span>          <span class="comment"># 列出正在运行的所有Session</span></span><br><span class="line"><span class="comment"># 重连接到指定会话</span></span><br><span class="line">tmux attach -t [number]</span><br><span class="line"><span class="comment"># [number] 是上一命令显示的Session列表中最前面的数字</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用以下命令给Session起有意义的名字，而非从0递增的数字</span></span><br><span class="line">tmux new -s [name]</span><br><span class="line"><span class="comment"># 给已经存在的Session重命名</span></span><br><span class="line">tmux rename-session -t [number] [name]</span><br><span class="line"><span class="comment"># [注] 以上两条命令中，[number]指会话数字代号，[name]是起的名称</span></span><br></pre></td></tr></table></figure><p>6.其它常用命令</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Ctrl-b     z     <span class="comment"># 最大化当前窗口/恢复原来大小</span></span><br><span class="line">Ctrl-b     ,     <span class="comment"># 重命名当前窗口</span></span><br><span class="line">......</span><br></pre></td></tr></table></figure><h2 id="自定义tmux">自定义tmux</h2><p>对tmux工具外观等进行自定义，待记录…</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Linux工具 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 工具 </tag>
+            
+            <tag> 杂谈 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>计算机教育中缺失的一课</title>
       <link href="/2023/01/08/20230108/"/>
       <url>/2023/01/08/20230108/</url>
